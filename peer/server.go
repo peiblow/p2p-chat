@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net"
+	"os"
 )
 
 type Server struct {
@@ -29,6 +30,18 @@ func getMyIpAddress() (string, error) {
 		}
 	}
 	return "unknown", fmt.Errorf("no valid IPv4 address found")
+}
+
+func getBootstrapAddress() string {
+	host := os.Getenv("BOOTSTRAP_HOST")
+	if host == "" {
+		host = "localhost"
+	}
+	port := os.Getenv("BOOTSTRAP_PORT")
+	if port == "" {
+		port = "9001"
+	}
+	return host + ":" + port
 }
 
 func startServer() {
@@ -68,7 +81,8 @@ func handleConnection(conn net.Conn) {
 }
 
 func bootstrapRegister(ipAddress string) {
-	conn, err := net.Dial("tcp", "localhost:9001")
+	bootstrapAddr := getBootstrapAddress()
+	conn, err := net.Dial("tcp", bootstrapAddr)
 	if err != nil {
 			fmt.Println("[SERVER] Erro ao conectar no bootstrap:", err)
 			return

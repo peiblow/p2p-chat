@@ -8,10 +8,10 @@ services:
     container_name: peer1
     environment:
       BOOTSTRAP_HOST: host.docker.internal
-      BOOTSTRAP_PORT: 8080
-      PEER_PORT: 9001
+      BOOTSTRAP_PORT: 9001
+      PEER_PORT: 8080
     ports:
-      - "9001:9001"
+      - "8080:8080"
     networks:
       - p2pnet
 
@@ -22,10 +22,10 @@ services:
     container_name: peer2
     environment:
       BOOTSTRAP_HOST: host.docker.internal
-      BOOTSTRAP_PORT: 8080
-      PEER_PORT: 9002
+      BOOTSTRAP_PORT: 9001
+      PEER_PORT: 8081
     ports:
-      - "9002:9002"
+      - "8081:8081"
     networks:
       - p2pnet
 

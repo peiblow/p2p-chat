@@ -21,7 +21,8 @@ func NewPeerInfo() *PeerInfo {
 }
 
 func (s *Server) fetchPeerList() ([]PeerInfo, error) {
-	conn, err := net.Dial("tcp", "localhost:9001")
+	bootstrapAddr := getBootstrapAddress()
+	conn, err := net.Dial("tcp", bootstrapAddr)
 	if err != nil {
 		fmt.Println("[SERVER] Erro ao conectar no bootstrap:", err)
 		return nil, err

@@ -11,16 +11,11 @@ func startClient(ipAddress string) {
 	
 	if ipAddress == "" {
 		fmt.Println("[CLIENT] No peer address provided")
-		myIp, err := getMyIpAddress()
-		if err != nil {
-			fmt.Println("[CLIENT] Error getting my IP address:", err)
-			return
-		}
-
-		ipAddress = myIp
+		return
 	}
 
-	conn, err := net.Dial("tcp", ipAddress + ":8080")
+	// ipAddress já vem com a porta incluída (ex: 172.20.0.2:8080)
+	conn, err := net.Dial("tcp", ipAddress)
 	if err != nil {
 		fmt.Println("[CLIENT] dial error:", err)
 		return

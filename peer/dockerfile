@@ -3,9 +3,13 @@ FROM golang:1.22 AS builder
 
 WORKDIR /app
 
-COPY go.mod go.sum ./
+# Copia os arquivos de módulo primeiro para aproveitar o cache do Docker
+COPY go.mod ./
+
+# Download das dependências
 RUN go mod download
 
+# Copia o código-fonte
 COPY . .
 
 # Build do binário
@@ -15,8 +19,11 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o peer .
 FROM alpine:latest
 
 WORKDIR /app
+
+# Copia o binário compilado
 COPY --from=builder /app/peer .
 
 EXPOSE 8080
 
+# Executa o binário
 CMD ["./peer"]
