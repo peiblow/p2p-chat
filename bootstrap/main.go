@@ -50,6 +50,25 @@ func (b *Bootstrap) handleConnection(conn net.Conn) {
 			b.mu.Unlock()
 
 			conn.Write([]byte("REGISTERED\n"))
+
+			// send to all peers about the new peer
+			if len(b.peers) > 1 {
+				fmt.Println("[BOOTSTRAP] Notifying peers about new peer:", peer)
+				b.mu.Lock()
+				for p := range b.peers {
+					if p != peer {
+						peerConn, err := net.Dial("tcp", p)
+						if err != nil {
+							fmt.Println("[BOOTSTRAP] Error notifying peer:", err)
+							continue
+						}
+						peerConn.Write([]byte("NEW_PEER " + peer + "\n"))
+						peerConn.Close()
+					}
+				}
+				b.mu.Unlock()
+			}
+
 			fmt.Printf("[BOOTSTRAP] Registered peer: %s\n", peer)
 		} else if msg == "GET_PEERS" {
 			b.mu.Lock()

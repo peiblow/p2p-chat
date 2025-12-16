@@ -43,7 +43,6 @@ func (s *Server) fetchPeerList() ([]PeerInfo, error) {
 	}
 
 	response := strings.TrimSpace(string(buf[:n]))
-	fmt.Println("[PEER] Bootstrap response:", response)
 
 	if response == "" {
 		return []PeerInfo{}, nil
@@ -52,7 +51,8 @@ func (s *Server) fetchPeerList() ([]PeerInfo, error) {
 	peers := strings.Split(response, ",")
 
 	for _, peer := range peers {
-		if isMyIpInPeerList(peer) {
+		if isMyIpInPeerList(peer, s.Address) {
+			fmt.Println("[PEER] Skipping my own IP:", peer)
 			continue
 		}
 
@@ -74,18 +74,13 @@ func (s *Server) fetchPeerList() ([]PeerInfo, error) {
 	return s.PeerList, nil
 }
 
-func isMyIpInPeerList(peerAdr string) bool {
-	myIp, err := getMyIpAddress()
-	if err != nil {
-		fmt.Println("[CHECK] Error getting my IP address:", err)
-		return false
-	}
-	return peerAdr == myIp + ":8080"
+func isMyIpInPeerList(peerAdr string , addr string) bool {
+	return peerAdr == addr
 }
 
 func measureLatencyToPeer(peer string) (int64, error) {
 	start := time.Now()
-	conn, err := net.DialTimeout("tcp", peer, 2*time.Second)
+	conn, err := net.DialTimeout("tcp", peer, 3*time.Second)
 	if err != nil {
 		return 0, err
 	}

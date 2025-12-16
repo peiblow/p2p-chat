@@ -5,23 +5,20 @@ import (
 	"time"
 )
 
+var server *Server
+
 func main() {
-	server := NewServer()
-	go startServer()
+	server = NewServer()
+	go startServer(server)
 	
 	time.Sleep(2 * time.Second)
-	myIp, _ := getMyIpAddress()
-	bootstrapRegister(myIp)
+	bootstrapRegister(server.Address)
 	
 	time.Sleep(2 * time.Second)
 	server.fetchPeerList()
 
-	fmt.Println("[MAIN] Peer list:", server.PeerList)
-	if len(server.PeerList) > 0{
-		go startClient(server.PeerList[0].Address)
-	} else {
-		fmt.Println("[MAIN] No other peers available, waiting for connections...")
-	}
+	go startClient(server.Address)
+	fmt.Println("[MAIN] No other peers available, connecting in localhost")
 
 	select {}
 }
