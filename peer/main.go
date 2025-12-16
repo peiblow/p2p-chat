@@ -17,8 +17,9 @@ func main() {
 	time.Sleep(2 * time.Second)
 	server.fetchPeerList()
 
-	go startClient(server.Address)
-	fmt.Println("[MAIN] No other peers available, connecting in localhost")
+	go handleMessages()
+
+	fmt.Println("[MAIN] Server running, waiting for connections...")
 
 	select {}
 }

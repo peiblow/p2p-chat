@@ -48,14 +48,14 @@ func getBootstrapAddress() string {
 }
 
 func startServer(s *Server) {
-	ln, err := net.Listen("tcp", ":8082")
+	ln, err := net.Listen("tcp", ":8081")
 	if err != nil {
 		panic(err)
 	}
 
 	myIp, _ := getMyIpAddress()
-	s.Address = myIp + ":8082"
-	fmt.Println("[SERVER] Listening on 8082...")
+	s.Address = myIp + ":8081"
+	fmt.Println("[SERVER] Listening on 8081...")
 
 	for {
 		conn, err := ln.Accept()
